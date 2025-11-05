@@ -2,17 +2,52 @@ backend:
   name: github
   repo: lilkaykid2002-creator/Neighbor-Park
   branch: main
+  auth_scope: repo
+  site_domain: neighbor-park.netlify.app
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "images/uploads"        # 上传文件保存在仓库
+public_folder: "/images/uploads"      # 网站访问路径
 
 collections:
+  # ✅ 文章管理（你可以发布文章、影评、随笔）
   - name: "posts"
     label: "文章"
     folder: "posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime" }
+      - { label: "正文", name: "body", widget: "markdown" }
+      - { label: "封面图片", name: "thumbnail", widget: "image", required: false }
+
+  # ✅ 纪录片/视频内容管理（可用于你的主要作品）
+  - name: "docs"
+    label: "纪录片"
+    folder: "docs"
     create: true
     slug: "{{slug}}"
     fields:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "发布日期", name: "date", widget: "datetime" }
-      - { label: "正文", name: "body", widget: "markdown" }
+      - { label: "视频地址（YouTube 或其他链接）", name: "video_url", widget: "string", required: false }
+      - { label: "描述", name: "description", widget: "markdown" }
+      - { label: "封面图片", name: "thumbnail", widget: "image", required: false }
+
+  # ✅ 页面内容（例如：About，Contact）
+  - name: "pages"
+    label: "页面"
+    files:
+      - label: "首页"
+        name: "home"
+        file: "pages/home.md"
+        fields:
+          - { label: "标题", name: "title", widget: "string" }
+          - { label: "正文", name: "body", widget: "markdown" }
+      - label: "关于我"
+        name: "about"
+        file: "pages/about.md"
+        fields:
+          - { label: "标题", name: "title", widget: "string" }
+          - { label: "正文", name: "body", widget: "markdown" }
+
