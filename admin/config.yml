@@ -51,3 +51,4 @@ collections:
           - { label: "标题", name: "title", widget: "string" }
           - { label: "正文", name: "body", widget: "markdown" }
 
+
