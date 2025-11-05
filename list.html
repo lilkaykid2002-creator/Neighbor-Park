@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighbor Park - 列表</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; color: #000; }
+        header { position: sticky; top:0; background:#fff; border-bottom:1px solid #000; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+        .logo { font-weight: 800; text-transform: uppercase; }
+        .section-actions { display:flex; gap:10px; flex-wrap:wrap; padding:16px 24px; }
+        .filter-button { padding:8px 12px; border:1px solid #000; background:#fff; cursor:pointer; text-transform:uppercase; font-size:12px; }
+        .filter-button.active, .filter-button:hover { background:#000; color:#fff; }
+        .grid { display:grid; grid-template-columns: repeat(3,1fr); border-top:1px solid #000; }
+        .card { border-right:1px solid #000; border-bottom:1px solid #000; cursor:pointer; transition:transform .2s ease; }
+        .card:nth-child(3n) { border-right:none; }
+        .image { height:260px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; font-size:40px; }
+        .info { padding:16px; }
+        .title { font-weight:800; margin-bottom:6px; }
+        .meta { font-size:12px; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+        @media (max-width: 1024px){ .grid{ grid-template-columns: repeat(2,1fr);} .card:nth-child(2n){ border-right:none; }}
+        @media (max-width: 768px){ .grid{ grid-template-columns: 1fr;} .card{ border-right:none; }}
+</style>
+    <script src="/scripts/cms.config.js" defer></script>
+    <script src="/scripts/cms.js" defer></script>
+    <script>
+        function getQuery(){
+            const p = new URLSearchParams(location.search);
+            return { type: (p.get('type')||'').toLowerCase() };
+        }
+        function applyFilter(filter){
+            document.querySelectorAll('.card').forEach(card=>{
+                const cat = (card.getAttribute('data-category')||'').toLowerCase();
+                const match = filter==='all' || cat.includes(filter);
+                card.style.display = match?'':'none';
+            });
+        }
+        function enableCardNavigation(){
+            document.querySelectorAll('.card').forEach(card=>{
+                card.onclick = ()=>{
+                    const href = card.getAttribute('data-href');
+                    if (href) location.href = href;
+                };
+            });
+        }
+        async function render(){
+            const { type } = getQuery();
+            const scope = type === 'doc' ? '纪录片' : type === 'article' ? '文章' : type === 'product' ? '商品' : '内容';
+            document.title = `Neighbor Park - ${scope}列表`;
+            document.getElementById('heading').textContent = `${scope}列表`;
+
+            let list = [];
+            if (window.CMS && window.CMS.isConfigured()) {
+                if (type==='doc') list = await window.CMS.getDocumentaries();
+                else if (type==='article') list = await window.CMS.getArticles();
+                else if (type==='product') list = await window.CMS.getProducts();
+            } else {
+                const res = await fetch('/data/content.json', { cache:'no-cache' });
+                const data = await res.json();
+                list = type==='doc' ? data.documentaries : type==='article' ? data.articles : type==='product' ? data.products : [];
+            }
+
+            const actions = document.querySelector('.section-actions');
+            actions.innerHTML = '';
+            const filters = type==='doc' ? ['all','music','design','culture','photography','sports','food']
+                : type==='article' ? ['all','culture','interview','lifestyle','tech','sustainability']
+                : type==='product' ? ['all','apparel','accessory','stationery'] : ['all'];
+            filters.forEach((f,i)=>{
+                const b = document.createElement('button');
+                b.className = 'filter-button'+(i===0?' active':'');
+                b.dataset.filter = f;
+                b.textContent = f;
+                b.onclick = ()=>{
+                    document.querySelectorAll('.filter-button').forEach(x=>x.classList.remove('active'));
+                    b.classList.add('active');
+                    applyFilter(f);
+                };
+                actions.appendChild(b);
+            });
+
+            const grid = document.querySelector('.grid');
+            grid.innerHTML = (list||[]).map(item=>{
+                const href = `/detail.html?type=${type}&slug=${item.slug}`;
+                const title = item.title || item.name || '';
+                return `
+                <div class="card" data-category="${(item.category||'').toLowerCase()}" data-href="${href}">
+                    <div class="image">${item.image||''}</div>
+                    <div class="info">
+                        <div class="meta">${type} / ${item.category||''}</div>
+                        <div class="title">${title}</div>
+                        ${item.excerpt?`<div class=\"excerpt\">${item.excerpt}</div>`:''}
+                        ${item.price?`<div class=\"price\">¥${item.price}</div>`:''}
+                    </div>
+                </div>`;
+            }).join('');
+            enableCardNavigation();
+        }
+        window.addEventListener('DOMContentLoaded', render);
+    </script>
+    </head>
+<body>
+    <header>
+        <div class="logo">NEIGHBOR PARK</div>
+        <a href="/index.html" style="text-decoration:none;">返回首页</a>
+    </header>
+    <h2 id="heading" style="padding:16px 24px; border-bottom:2px solid #000;">列表</h2>
+    <div class="section-actions" aria-label="二级筛选"></div>
+    <div class="grid"></div>
+</body>
+</html>
+
+

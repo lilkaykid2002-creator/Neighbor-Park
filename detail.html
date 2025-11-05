@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighbor Park - 详情</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; color:#000; background:#fff; }
+        header { position: sticky; top:0; background:#fff; border-bottom:1px solid #000; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; z-index:10; }
+        .logo { font-weight: 800; text-transform: uppercase; }
+        /* 顶部信息区（接近 VICE） */
+        .article-header { max-width: 980px; margin: 24px auto 0; padding: 0 16px; }
+        .breadcrumbs { font-size:12px; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+        .article-title { font-weight:900; font-size:40px; line-height:1.15; margin-bottom:10px; letter-spacing:-0.5px; }
+        .article-sub { font-size:18px; line-height:1.6; color:#444; margin-bottom:14px; }
+        .meta-bar { display:flex; gap:14px; flex-wrap:wrap; align-items:center; font-size:12px; color:#666; border-top:1px solid #eee; border-bottom:1px solid #eee; padding:10px 0; }
+        .meta-sep { opacity:.5; }
+        .share { margin-left:auto; display:flex; gap:10px; }
+        .share a { display:inline-block; padding:6px 10px; border:1px solid #000; font-size:12px; text-decoration:none; color:#000; }
+        /* 首图 */
+        .hero { height: 48vh; min-height:360px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; font-size:56px; margin: 16px auto; max-width: 1200px; }
+        /* 正文布局 */
+        .article-body { max-width: 760px; margin: 0 auto; padding: 0 16px 60px; }
+        .article-body p { font-size:18px; line-height:1.9; color:#222; margin: 18px 0; }
+        .article-body h2 { font-size:26px; margin:28px 0 12px; }
+        .pull-quote { border-left: 4px solid #000; padding-left:14px; margin:26px 0; font-size:22px; line-height:1.5; font-weight:700; }
+        .inline-image { background:#f5f5f5; height:320px; display:flex; align-items:center; justify-content:center; font-size:40px; margin:24px 0 8px; }
+        .caption { font-size:12px; color:#666; margin-bottom:16px; }
+        .foot-meta { border-top:1px solid #eee; margin-top:32px; padding-top:16px; color:#666; font-size:12px; }
+        @media (max-width: 768px) {
+            .article-title { font-size:28px; }
+            .hero { height: 36vh; min-height:240px; }
+        }
+    </style>
+    <script>
+        function getQuery(){
+            const p = new URLSearchParams(location.search);
+            return { type: (p.get('type')||'').toLowerCase(), slug: p.get('slug')||'' };
+        }
+        // 演示数据（可替换为外部 JSON/CMS 拉取；字段对齐文章风格）
+        const db = {
+            doc: {
+                'underground-music': { title:'地下音乐现场', sub:'独立乐队与城市空间的共振', image:'🎵', category:'music', author:'编辑部', date:'2025-10-28', body:'这里是纪录片《地下音乐现场》的详情正文占位。' },
+                'street-culture': { title:'城市街头文化志', sub:'街头艺术、涂鸦与城市更新的边界', image:'🏙️', category:'culture', author:'张明', date:'2025-11-01', body:'这里是纪录片《城市街头文化志》的详情正文占位。' }
+            },
+            article: {
+                'y2k-aesthetics': { title:'解构Y2K美学', sub:'千禧年复古如何再度成为主流？', image:'📰', category:'culture', author:'李思', date:'2025-11-01', body:'这里是文章《解构Y2K美学》的详情正文占位。' },
+                'illustrator-interview': { title:'对话独立插画师', sub:'用画笔记录都市青年的情绪', image:'🎨', category:'interview', author:'王强', date:'2025-10-28', body:'这里是文章《对话独立插画师》的详情正文占位。' },
+                'cafe-culture': { title:'咖啡馆文化：城市青年的第三空间', sub:'十家城市空间的微观叙事', image:'☕', category:'lifestyle', author:'编辑部', date:'2025-10-20', body:'这里是文章《咖啡馆文化》的详情正文占位。' },
+                'digital-nomads': { title:'数字游民：重新定义工作与生活边界', sub:'移动办公的自由与约束', image:'📱', category:'tech', author:'编辑部', date:'2025-10-15', body:'这里是文章《数字游民》的详情正文占位。' },
+                'sustainable-fashion': { title:'可持续时尚：年轻消费者的环保选择', sub:'当时尚遇见责任', image:'🌿', category:'sustainability', author:'编辑部', date:'2025-10-10', body:'这里是文章《可持续时尚》的详情正文占位。' }
+            },
+            product: {
+                'logo-tee': { title:'Logo Tee', image:'👕', category:'apparel', price:199, body:'这里是商品 Logo Tee 的详情正文占位。' }
+            }
+        };
+        async function getItemFromCMS(type, slug){
+            if (!(window.CMS && window.CMS.isConfigured())) return null;
+            if (type==='doc') return await window.CMS.getDocumentaryBySlug(slug);
+            if (type==='article') return await window.CMS.getArticleBySlug(slug);
+            if (type==='product') return await window.CMS.getProductBySlug(slug);
+            return null;
+        }
+        function estimateReadingMinutes(text){
+            const words = (text||'').trim().replace(/\s+/g,' ').split(' ').length;
+            const chars = (text||'').length;
+            const wpm = 350; // 中文/混排估算
+            const minutes = Math.max(1, Math.round(words / wpm) || Math.round(chars/700));
+            return minutes;
+        }
+        function formatDate(d){
+            if (!d) return '';
+            try { const dt = new Date(d); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; } catch { return d; }
+        }
+        async function render(){
+            const { type, slug } = getQuery();
+            let item = await getItemFromCMS(type, slug);
+            if (!item) item = (db[type]||{})[slug];
+            if (!item){
+                document.title = '未找到内容';
+                document.querySelector('#app').innerHTML = '<div class="article-body"><p>未找到该内容，请返回列表。</p></div>';
+                return;
+            }
+            const scope = type==='doc' ? 'Films' : type==='article' ? 'Articles' : 'Shop';
+            const readingMin = type!=='product' ? estimateReadingMinutes(item.body) : null;
+            document.title = `${item.title} - Neighbor Park`;
+
+            const shareUrl = location.href;
+            const shareBar = `
+                <div class="share">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" rel="noopener">FB</a>
+                    <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}" target="_blank" rel="noopener">X</a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}" target="_blank" rel="noopener">IN</a>
+                </div>`;
+
+            document.querySelector('#app').innerHTML = `
+                <div class="article-header">
+                    <div class="breadcrumbs">${scope} / ${item.category || ''}</div>
+                    <h1 class="article-title">${item.title}</h1>
+                    ${item.sub ? `<div class="article-sub">${item.sub}</div>` : ''}
+                    <div class="meta-bar">
+                        ${item.author ? `<span>By ${item.author}</span><span class="meta-sep">|</span>`:''}
+                        ${item.date ? `<span>${formatDate(item.date)}</span>`:''}
+                        ${readingMin ? `<span class="meta-sep">|</span><span>${readingMin} min read</span>`:''}
+                        ${shareBar}
+                    </div>
+                </div>
+                <div class="hero" id="image">${item.image || '🖼️'}</div>
+                <div class="article-body">
+                    <p>${item.body || ''}</p>
+                    <div class="pull-quote">“人群离去之后，城市还在持续发声。”</div>
+                    <div class="inline-image">🖼️</div>
+                    <div class="caption">图片说明占位（可替换为真实图片与说明）</div>
+                    <h2>延伸阅读</h2>
+                    <p>这里可以放与主题相关的背景信息、引用或外部参考链接。</p>
+                    ${type==='product' && item.price ? `<div class="foot-meta">价格：¥${item.price}</div>`:''}
+                    <div class="foot-meta">来源风格参考：<a href="https://www.vice.com/en/article/22-cars-were-dropped-into-the-ocean-to-serve-as-man-made-coral-reefs/" target="_blank" rel="noopener">VICE 文章模板</a></div>
+                </div>
+            `;
+        }
+        window.addEventListener('DOMContentLoaded', render);
+    </script>
+    <script src="/scripts/cms.config.js" defer></script>
+    <script src="/scripts/cms.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">NEIGHBOR PARK</div>
+        <div>
+            <a href="/index.html" style="margin-right:12px; text-decoration:none;">首页</a>
+            <a href="javascript:history.back()" style="text-decoration:none;">返回</a>
+        </div>
+    </header>
+    <div id="app"></div>
+</body>
+</html>
+
+

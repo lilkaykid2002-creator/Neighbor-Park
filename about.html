@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Neighbor Park</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; color:#000; }
+        header { position: sticky; top:0; background:#fff; border-bottom:1px solid #000; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+        .logo { font-weight: 800; text-transform: uppercase; }
+        .container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+        h1 { font-size:28px; margin-bottom:16px; }
+        p { font-size:16px; line-height:1.8; color:#333; }
+        .team { display:grid; grid-template-columns: repeat(3,1fr); gap:24px; margin-top:24px; }
+        .member { text-align:center; }
+        .avatar { width:120px; height:120px; border-radius:50%; background:#f5f5f5; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:36px; }
+        @media (max-width: 768px){ .team{ grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">NEIGHBOR PARK</div>
+        <a href="/index.html" style="text-decoration:none;">首页</a>
+    </header>
+    <div class="container">
+        <h1>About Neighbor Park</h1>
+        <p>Neighbor Park 致力于挖掘和探索当代青年潮流文化。我们通过纪录片、深度文章与周边产品，记录与呈现不同领域创作者的生活与态度。</p>
+        <p>我们相信文化不是高高在上，而是每个人都能参与创造的生活方式。</p>
+        <div class="team">
+            <div class="member">
+                <div class="avatar">👨‍💼</div>
+                <div>张明 · 创始人 & 主编</div>
+            </div>
+            <div class="member">
+                <div class="avatar">👩‍🎨</div>
+                <div>李思 · 创意总监</div>
+            </div>
+            <div class="member">
+                <div class="avatar">👨‍🎥</div>
+                <div>王强 · 纪录片导演</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

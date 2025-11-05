@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Neighbor Park</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; color:#000; }
+        header { position: sticky; top:0; background:#fff; border-bottom:1px solid #000; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+        .logo { font-weight: 800; text-transform: uppercase; }
+        .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        h1 { font-size:28px; margin-bottom:16px; }
+        .grid { display:grid; grid-template-columns: repeat(4,1fr); gap:24px; }
+        .card { border:1px solid #000; padding:16px; }
+        .label { font-size:12px; text-transform:uppercase; letter-spacing:2px; opacity:.7; margin-bottom:8px; }
+        .social { display:flex; gap:10px; margin-top:10px; }
+        .pill { display:inline-block; padding:6px 10px; border:1px solid #000; text-decoration:none; color:#000; font-size:12px; }
+        @media (max-width: 1024px){ .grid{ grid-template-columns: repeat(2,1fr);} }
+        @media (max-width: 768px){ .grid{ grid-template-columns: 1fr;} }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">NEIGHBOR PARK</div>
+        <a href="/index.html" style="text-decoration:none;">首页</a>
+    </header>
+    <div class="container">
+        <h1>Contact</h1>
+        <div class="grid">
+            <div class="card">
+                <div class="label">Business</div>
+                <div>business@neighborpark.com</div>
+            </div>
+            <div class="card">
+                <div class="label">Editorial</div>
+                <div>submit@neighborpark.com</div>
+            </div>
+            <div class="card">
+                <div class="label">Support</div>
+                <div>support@neighborpark.com</div>
+            </div>
+            <div class="card">
+                <div class="label">Social</div>
+                <div>@NeighborPark</div>
+                <div class="social">
+                    <a class="pill" href="#">IG</a>
+                    <a class="pill" href="#">TW</a>
+                    <a class="pill" href="#">YT</a>
+                    <a class="pill" href="#">WB</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
