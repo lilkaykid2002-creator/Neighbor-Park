@@ -3,7 +3,7 @@ backend:
   repo: lilkaykid2002-creator/Neighbor-Park
   branch: main
   auth_type: oauth
-  app_id: Ov23lijfgcqlK5Q7YSdN
+  app_id: Ov23liZcWSQUmlRGaCFH
 
 media_folder: "images/uploads"        # 上传文件保存在仓库
 public_folder: "/images/uploads"      # 网站访问路径
